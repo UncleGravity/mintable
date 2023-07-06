@@ -4,7 +4,8 @@ import { logInfo, logError } from '../../common/logging'
 import { Account } from '../../types/account'
 import { Transaction } from '../../types/transaction'
 import { CSVExportConfig } from '../../types/integrations/csv-export'
-import { writeFileSync } from 'fs'
+import { existsSync, mkdirSync, writeFileSync } from 'fs'
+import { join } from 'path'
 import stringify from 'csv-stringify/lib/sync'
 import { format } from 'date-fns'
 
@@ -32,7 +33,10 @@ export class CSVExportIntegration {
                 columns: this.config.transactions.properties
             })
 
+            // Save Raw JSON data to /csv/transactions.json
+            const dir = join(process.cwd(), "/mintable/csv");
             writeFileSync(this.CSVExportConfig.transactionPath, data)
+            writeFileSync(join(dir, "/raw-transactions.json"), JSON.stringify(accounts, null, 4)); 
 
             logInfo(
                 `Successfully exported ${transactions.length} transactions for integration ${IntegrationId.CSVExport}`
