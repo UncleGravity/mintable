@@ -1,4 +1,3 @@
-import { existsSync, realpathSync } from 'fs'
 import prompts from 'prompts'
 
 import { TellerConfig, defaultTellerConfig } from '../../types/integrations/teller'
@@ -26,15 +25,19 @@ export default async () => {
             },
             {
                 type: 'text',
-                name: 'pathCertificate',
-                message: 'Path to Certificate',
-                validate: (s: string) => s.length && existsSync(s) ? true : 'Must enter path to certificate file.'
+                name: 'cert',
+                message: "Run this command on your certificate.pem file:\n \
+                \tbase64 -w 0 certificate.pem | tr -d '\\n'\n\n \
+Certificate (base64 encoded)",
+                validate: (s: string) => s.length ? true : 'Must enter base64 encoded certificate  (no line breaks).'
             },
             {
                 type: 'text',
-                name: 'pathPrivateKey',
-                message: 'Path to Private Key',
-                validate: (s: string) => s.length && existsSync(s) ? true : 'Must enter path to private key file.'
+                name: 'privateKey',
+                message: "Run this command on your private_key.pem file:\n \
+                \tbase64 -w 0 private_key.pem | tr -d '\\n'\n\n \
+Private Key (base64 encoded)",
+                validate: (s: string) => s.length ? true : 'Must enter base64 encoded private key (no line breaks).'
             },
             {
                 type: 'text',
@@ -48,8 +51,8 @@ export default async () => {
             const tellerConfig = (config.integrations[IntegrationId.Teller] as TellerConfig) || defaultTellerConfig
 
             tellerConfig.name = credentials.name
-            tellerConfig.pathCertificate = realpathSync(credentials.pathCertificate)
-            tellerConfig.pathPrivateKey = realpathSync(credentials.pathPrivateKey)
+            tellerConfig.cert = credentials.cert // base64 encoded certificate
+            tellerConfig.privateKey = credentials.privateKey // base64 encoded private key
             tellerConfig.appId = credentials.appId
 
             config.integrations[IntegrationId.Teller] = tellerConfig

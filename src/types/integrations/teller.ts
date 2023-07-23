@@ -4,8 +4,8 @@ export interface TellerConfig extends BaseIntegrationConfig {
     id: IntegrationId.Teller
     type: IntegrationType.Import
 
-    pathCertificate: string,
-    pathPrivateKey: string,
+    cert: string, // base64 encoded certificate string
+    privateKey: string, // base64 encoded private key string
     appId: string
 }
 
@@ -14,8 +14,8 @@ export const defaultTellerConfig: TellerConfig = {
     id: IntegrationId.Teller,
     type: IntegrationType.Import,
 
-    pathCertificate: '',
-    pathPrivateKey: '',
+    cert: '', // base64 encoded certificate string
+    privateKey: '', // base64 encoded private key string
     appId: ''
 }
 

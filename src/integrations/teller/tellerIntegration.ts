@@ -26,8 +26,8 @@ export class TellerIntegration {
             const req = https.request(`https://api.teller.io/${path}`, {
                 method,
                 auth: `${token}:`,
-                cert: readFileSync(this.tellerConfig.pathCertificate),
-                key: readFileSync(this.tellerConfig.pathPrivateKey),
+                cert: Buffer.from(this.tellerConfig.cert, 'base64'), // decode base64 to Buffer
+                key: Buffer.from(this.tellerConfig.privateKey, 'base64'), // decode base64 to Buffer
             }, (res) => {
                 const resData = []
                 res.on('data', (chunk) => resData.push(chunk))
@@ -45,7 +45,7 @@ export class TellerIntegration {
             }
             req.end()
         })
-    }
+    }    
 
     public registerAccount = (accessToken: string, accountId: string): void => {
         updateConfig(config => {
